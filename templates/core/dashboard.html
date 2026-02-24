@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0">
+            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+        </h2>
+        <div>
+            <span class="text-muted">Welcome back, {{ user.get_full_name }}</span>
+        </div>
+    </div>
+
+    <!-- Welcome Card -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">
+                <i class="fas fa-hand-wave me-2"></i>Hello, {{ user.first_name }}!
+            </h5>
+            <p class="card-text">
+                Today is {{ today|date:"l, F j, Y" }}. You are logged in as 
+                <span class="badge bg-primary">{{ user.get_role_display }}</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Role-specific content -->
+    <div class="row">
+        {% if user.role == 'INITIATOR' %}
+            <!-- Dr. Amani's Dashboard -->
+            <div class="col-md-4 mb-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">My Requisitions</h6>
+                                <h2 class="text-white mb-0">{{ my_requisitions.count }}</h2>
+                            </div>
+                            <i class="fas fa-file-alt fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Pending Approvals</h6>
+                                <h2 class="text-white mb-0">{{ pending_approvals }}</h2>
+                            </div>
+                            <i class="fas fa-clock fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Approved</h6>
+                                <h2 class="text-white mb-0">{{ approved_requisitions }}</h2>
+                            </div>
+                            <i class="fas fa-check-circle fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        {% elif user.role == 'CHIEF_OFFICER' %}
+            <!-- Madam Joy's Dashboard -->
+            <div class="col-md-6 mb-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Pending Your Review</h6>
+                                <h2 class="text-white mb-0">{{ pending_reviews.count }}</h2>
+                            </div>
+                            <i class="fas fa-clock fa-3x text-white-50"></i>
+                        </div>
+                        {% if pending_reviews %}
+                        <a href="{% url 'requisitions:pending_approvals' %}" class="btn btn-light btn-sm mt-2">
+                            Review Now <i class="fas fa-arrow-right"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Budget Utilization</h6>
+                                <h2 class="text-white mb-0">{{ budget_utilization }}%</h2>
+                            </div>
+                            <i class="fas fa-chart-pie fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        {% elif user.role == 'COUNTY_SECRETARY' %}
+            <!-- Mr. Kiplagat's Dashboard -->
+            <div class="col-md-4 mb-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Pending Endorsements</h6>
+                                <h2 class="text-white mb-0">{{ pending_endorsements.count }}</h2>
+                            </div>
+                            <i class="fas fa-check-double fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Endorsed This Month</h6>
+                                <h2 class="text-white mb-0">{{ recent_endorsements.count }}</h2>
+                            </div>
+                            <i class="fas fa-thumbs-up fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Total Hires ({{ today.year }})</h6>
+                                <h2 class="text-white mb-0">{{ total_hires_this_year }}</h2>
+                            </div>
+                            <i class="fas fa-users fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        {% elif user.role == 'CPSB_BOARD' %}
+            <!-- Board Dashboard -->
+            <div class="col-md-6 mb-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Pending Board Items</h6>
+                                <h2 class="text-white mb-0">{{ pending_board_items.count }}</h2>
+                            </div>
+                            <i class="fas fa-gavel fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Approved (Last 30 days)</h6>
+                                <h2 class="text-white mb-0">{{ recent_approvals.count }}</h2>
+                            </div>
+                            <i class="fas fa-check-circle fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        {% elif user.role == 'HR_SECRETARIAT' or user.role == 'HR_ADMIN' %}
+            <!-- HR Dashboard -->
+            <div class="col-md-3 mb-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Active Requisitions</h6>
+                                <h2 class="text-white mb-0">{{ active_requisitions }}</h2>
+                            </div>
+                            <i class="fas fa-bullhorn fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Total Applications</h6>
+                                <h2 class="text-white mb-0">{{ total_applications }}</h2>
+                            </div>
+                            <i class="fas fa-file-upload fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Shortlisted</h6>
+                                <h2 class="text-white mb-0">{{ shortlisted_count }}</h2>
+                            </div>
+                            <i class="fas fa-user-check fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50">Interviewed</h6>
+                                <h2 class="text-white mb-0">{{ interview_count }}</h2>
+                            </div>
+                            <i class="fas fa-calendar-check fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Candidates Table -->
+            <div class="col-12 mt-4">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">Recent Applications</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Position</th>
+                                        <th>Applied Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for candidate in recent_candidates %}
+                                    <tr>
+                                        <td>{{ candidate.full_name }}</td>
+                                        <td>Nurse III</td>
+                                        <td>{{ candidate.applied_date|date:"M d, Y" }}</td>
+                                        <td>
+                                            <span class="badge {% if candidate.stage == 'APPLIED' %}bg-secondary
+                                                              {% elif candidate.stage == 'SHORTLISTED' %}bg-warning
+                                                              {% elif candidate.stage == 'INTERVIEWED' %}bg-info
+                                                              {% elif candidate.stage == 'SELECTED' %}bg-success
+                                                              {% endif %}">
+                                                {{ candidate.get_stage_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4">
+                                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">No applications yet</p>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Savanna County Recruitment{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </h4>
+                    <p class="text-white-50 mb-0 small">Savanna County Recruitment System</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_first_name" class="form-label">First Name *</label>
+                                <input type="text" name="first_name" class="form-control" 
+                                       id="id_first_name" placeholder="Enter first name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_last_name" class="form-label">Last Name *</label>
+                                <input type="text" name="last_name" class="form-control" 
+                                       id="id_last_name" placeholder="Enter last name" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email *</label>
+                            <input type="email" name="email" class="form-control" 
+                                   id="id_email" placeholder="Enter email address" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_national_id" class="form-label">National ID *</label>
+                                <input type="text" name="national_id" class="form-control" 
+                                       id="id_national_id" placeholder="7-8 digits" required>
+                                <small class="text-muted">Kenya National ID (7-8 digits)</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_phone_number" class="form-label">Phone Number *</label>
+                                <input type="text" name="phone_number" class="form-control" 
+                                       id="id_phone_number" placeholder="+2547XXXXXXXX" required>
+                                <small class="text-muted">Format: +254712345678</small>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_role" class="form-label">Role *</label>
+                            <select name="role" class="form-control" id="id_role" required>
+                                <option value="">Select your role</option>
+                                <option value="INITIATOR">Initiator (Dr. Amani - Health Director)</option>
+                                <option value="CHIEF_OFFICER">Chief Officer - Health (Madam Joy)</option>
+                                <option value="COUNTY_SECRETARY">County Secretary (Mr. Kiplagat)</option>
+                                <option value="CPSB_BOARD">CPSB Board Member</option>
+                                <option value="CPSB_SECRETARIAT">CPSB Secretariat</option>
+                                <option value="HR_SECRETARIAT">HR Secretariat</option>
+                                <option value="HR_ADMIN">HR Administrator</option>
+                                <option value="PANELIST">Interview Panelist</option>
+                                <option value="PAYROLL_OFFICER">Payroll Officer</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_department" class="form-label">Department</label>
+                            <input type="text" name="department" class="form-control" 
+                                   id="id_department" placeholder="e.g., Health" value="Health">
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_password1" class="form-label">Password *</label>
+                                <input type="password" name="password1" class="form-control" 
+                                       id="id_password1" placeholder="Enter password" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_password2" class="form-label">Confirm Password *</label>
+                                <input type="password" name="password2" class="form-control" 
+                                       id="id_password2" placeholder="Confirm password" required>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info small">
+                            <i class="fas fa-info-circle me-2"></i>
+                            By registering, you agree to the processing of your data as per the 
+                            Kenya Data Protection Act (DPA 2019).
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-user-plus me-2"></i>Register
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="mb-0">Already have an account? 
+                            <a href="{% url 'accounts:login' %}">Login here</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
